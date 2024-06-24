@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: rgb(63, 86, 105);
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        .container button {
+            padding: 10px 20px;
+            background: #30111f;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .container .movie-details {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to your Dashboard, <%= username %>!</h2>
+        <p>Login successful!</p>
+        <input type="text" id="movie-title" placeholder="Enter movie title">
+        <button onclick="searchMovie()">Search Movie</button>
+        <div class="movie-details" id="movie-details"></div>
+    </div>
+    <script>
+        function searchMovie() {
+            const title = document.getElementById('movie-title').value;
+            fetch(`/movies?title=${title}`)
+                .then(response => response.json())
+                .then(data => {
+                    const movieDetails = document.getElementById('movie-details');
+                    if (data.Response === 'True') {
+                        movieDetails.innerHTML = `
+                            <h3>${data.Title} (${data.Year})</h3>
+                            <p><strong>Director:</strong> ${data.Director}</p>
+                            <p><strong>Plot:</strong> ${data.Plot}</p>
+                            <p><strong>IMDb Rating:</strong> ${data.imdbRating}</p>
+                        `;
+                    } else {
+                        movieDetails.innerHTML = `<p>Movie not found.</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching movie data:', error);
+                });
+        }
+    </script>
+</body>
+</html>
